@@ -18,7 +18,6 @@ func newHTTPHandlers(todoList *todo.List) *HTTPHandlers {
 
 // /tasks, POST, JSON
 func (h *HTTPHandlers) HandleCreateTask(w http.ResponseWriter, r *http.Request) {
-
 }
 
 // /tasks/{title}, GET, pattern
@@ -32,7 +31,7 @@ func (h *HTTPHandlers) HandleGetAllTasks(w http.ResponseWriter, r *http.Request)
 }
 
 // /tasks?completed=false, GET, query
-func (h *HTTPHandlers) HandleAllUncompletedTasks(w http.ResponseWriter, r *http.Request) {
+func (h *HTTPHandlers) HandleGetAllUncompletedTasks(w http.ResponseWriter, r *http.Request) {
 
 }
 
