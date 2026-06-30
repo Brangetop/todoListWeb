@@ -1,6 +1,7 @@
 package http
 
 import (
+	"errors"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -10,7 +11,7 @@ type HTTPServer struct {
 	HTTPHandlers *HTTPHandlers
 }
 
-func newHTTPServer(httpHandlers HTTPHandlers) *HTTPServer {
+func NewHTTPServer(httpHandlers HTTPHandlers) *HTTPServer {
 	return &HTTPServer{
 		HTTPHandlers: &httpHandlers,
 	}
@@ -26,5 +27,12 @@ func (s *HTTPServer) StartServer() error {
 	router.Path("/tasks/{title}").Methods("PATCH").HandlerFunc(s.HTTPHandlers.HandleCompleteTask)
 	router.Path("/tasks/{title}").Methods("DELETE").HandlerFunc(s.HTTPHandlers.HandleDeleteTask)
 
-	return http.ListenAndServe("8080", router)
+	if err := http.ListenAndServe(":8080", router); err != nil {
+		if errors.Is(err, http.ErrServerClosed) {
+			return nil
+		} else {
+			return err
+		}
+	}
+	return nil
 }

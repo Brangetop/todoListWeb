@@ -15,7 +15,7 @@ type HTTPHandlers struct {
 	todoList *todo.List
 }
 
-func newHTTPHandlers(todoList *todo.List) *HTTPHandlers {
+func NewHTTPHandlers(todoList *todo.List) *HTTPHandlers {
 	return &HTTPHandlers{
 		todoList: todoList,
 	}
@@ -67,6 +67,7 @@ func (h *HTTPHandlers) HandleCreateTask(w http.ResponseWriter, r *http.Request) 
 	}
 
 	w.WriteHeader(http.StatusCreated)
+	w.Header().Set("Content-Type", "application/json")
 	if _, err := w.Write(b); err != nil {
 		fmt.Println(err)
 	}
@@ -97,6 +98,7 @@ func (h *HTTPHandlers) HandleGetTasks(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
 	if _, err := w.Write(b); err != nil {
 		fmt.Println("failed to write http response,", err)
 
@@ -114,6 +116,7 @@ func (h *HTTPHandlers) HandleGetAllTasks(w http.ResponseWriter, r *http.Request)
 	}
 
 	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
 	if _, err := w.Write(b); err != nil {
 		fmt.Println("failed to write http response", err)
 	}
@@ -128,6 +131,7 @@ func (h *HTTPHandlers) HandleGetAllUncompletedTasks(w http.ResponseWriter, r *ht
 	}
 
 	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
 	if _, err := w.Write(b); err != nil {
 		panic(err)
 	}
@@ -159,6 +163,7 @@ func (h *HTTPHandlers) HandleCompleteTask(w http.ResponseWriter, r *http.Request
 			} else {
 				http.Error(w, errorDTO.ToString(), http.StatusInternalServerError)
 			}
+			return
 		}
 	} else {
 		if _, err := h.todoList.UncompleteTask(title); err != nil {
@@ -171,8 +176,11 @@ func (h *HTTPHandlers) HandleCompleteTask(w http.ResponseWriter, r *http.Request
 			} else {
 				http.Error(w, errorDTO.ToString(), http.StatusInternalServerError)
 			}
+			return
 		}
 	}
+
+	w.WriteHeader(http.StatusOK)
 }
 
 // /tasks/{title}, DELETE, pattern + JSON
@@ -189,5 +197,7 @@ func (h *HTTPHandlers) HandleDeleteTask(w http.ResponseWriter, r *http.Request) 
 		} else {
 			http.Error(w, errorDTO.ToString(), http.StatusInternalServerError)
 		}
+		return
 	}
+	w.WriteHeader(http.StatusNoContent)
 }

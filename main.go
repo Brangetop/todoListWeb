@@ -1,25 +1,18 @@
 package main
 
-import "time"
+import (
+	"fmt"
 
-type Task struct {
-	Title        string
-	Description  string
-	isDone       bool
-	initTime     time.Time
-	finishedTime time.Time
-}
-
-func newTask(title string, description string) *Task {
-
-	return &Task{
-		Title:       title,
-		Description: description,
-		isDone:      false,
-		initTime:    time.Now(),
-	}
-}
+	"brange.net/todoListWeb/http"
+	"brange.net/todoListWeb/todo"
+)
 
 func main() {
+	todoList := todo.NewList()
+	httpHandlers := http.NewHTTPHandlers(todoList)
+	httpServer := http.NewHTTPServer(*httpHandlers)
 
+	if err := httpServer.StartServer(); err != nil {
+		fmt.Println(err)
+	}
 }
