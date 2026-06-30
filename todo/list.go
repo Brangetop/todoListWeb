@@ -18,7 +18,7 @@ func (l *List) AddTask(task Task) error {
 	defer l.mtx.Unlock()
 
 	if _, ok := l.tasks[task.Title]; ok {
-		return errTaskAlreadyExists
+		return ErrTaskAlreadyExists
 	}
 
 	l.tasks[task.Title] = task
@@ -32,7 +32,7 @@ func (l *List) GetTask(title string) (Task, error) {
 
 	task, ok := l.tasks[title]
 	if !ok {
-		return Task{}, errTaskNotFound
+		return Task{}, ErrTaskNotFound
 	}
 
 	return task, nil
@@ -72,7 +72,7 @@ func (l *List) CompleteTask(title string) (Task, error) {
 
 	task, ok := l.tasks[title]
 	if !ok {
-		return Task{}, errTaskNotFound
+		return Task{}, ErrTaskNotFound
 	}
 
 	task.Complete()
@@ -88,7 +88,7 @@ func (l *List) UncompleteTask(title string) (Task, error) {
 
 	task, ok := l.tasks[title]
 	if !ok {
-		return Task{}, errTaskNotFound
+		return Task{}, ErrTaskNotFound
 	}
 
 	task.Uncomplete()
@@ -104,7 +104,7 @@ func (l *List) DeleteTask(title string) error {
 
 	_, ok := l.tasks[title]
 	if !ok {
-		return errTaskNotFound
+		return ErrTaskNotFound
 	}
 
 	delete(l.tasks, title)
